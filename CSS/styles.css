@@ -28,8 +28,15 @@ body {
 }
 
 .logo img {
-    width: 100px;
-    margin-bottom: 25px;
+    width: 200px;
+    margin-bottom: 1px;
+    margin-top: 50px;
+}
+
+.logo1 img {
+    width: 200px;
+    margin-bottom: 1px;
+    margin-top: 50px;
 }
 
 h1 {
