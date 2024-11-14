@@ -268,3 +268,11 @@ button:hover {
 .forgot-password-container .extra-links a:hover {
     color: #d1e0fc;
 }
+
+/* Styling untuk persyaratan password */
+.password-requirements {
+    font-size: 0.9em; /* Membuat teks lebih kecil */
+    color: #555; /* Warna teks lebih terang agar tidak terlalu mencolok */
+    margin-top: 5px;
+    text-align: left;
+}
