@@ -16,10 +16,10 @@
         <p class="subtitle">Join ThreadFlow today!</p>
         <div class="login-box">
             <form action="#">
-                <input type="text" placeholder="Username" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <input type="password" placeholder="Confirm Password" required>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm-password" placeholder="Confirm Password" required>
                 <button type="submit">Register</button>
             </form>
         </div>
