@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Eksekusi statement
         if ($stmt->execute()) {
-            header("Location: index.php"); // Redirect ke halaman utama setelah post berhasil
+            header('Location: index.php'); // Redirect ke halaman utama setelah post berhasil
             exit();
         } else {
             $error = "There was an error submitting your post.";
