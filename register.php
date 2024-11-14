@@ -24,7 +24,7 @@
             </form>
         </div>
         <div class="extra-links">
-            <a href="#">Already have an account? Login</a>
+            <a href="/login.php">Already have an account? Login</a>
         </div>
     </div>
 </body>
