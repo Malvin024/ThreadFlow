@@ -110,3 +110,79 @@ button:hover {
 .extra-links a:hover {
     color: #d1e0fc;
 }
+
+.register-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    margin: 0 auto;
+    background: rgba(0, 0, 50, 0.8);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.register-container .logo img {
+    width: 80px;
+    margin-bottom: 20px;
+}
+
+.register-container h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.register-container .subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #b0c4de;
+}
+
+.register-container input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    outline: none;
+}
+
+.register-container input::placeholder {
+    color: #b3c2d1;
+}
+
+.register-container button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #4da6ff, #1e90ff);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.register-container button:hover {
+    background: linear-gradient(135deg, #1e90ff, #4da6ff);
+}
+
+.register-container .extra-links {
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.register-container .extra-links a {
+    color: #80c9ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.register-container .extra-links a:hover {
+    color: #d1e0fc;
+}
