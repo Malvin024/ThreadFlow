@@ -17,19 +17,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
         $error = "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.";
     } else {
-        // Hash password untuk keamanan
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        // Cek apakah username sudah ada di database
+        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        // Siapkan query untuk insert data
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $hashed_password);
-
-        // Eksekusi query
-        if ($stmt->execute()) {
-            header("Location: login.php"); // Redirect ke halaman login setelah berhasil register
-            exit();
+        if ($result->num_rows > 0) {
+            // Username sudah terdaftar
+            $error = "Invalid username. This username is already taken.";
         } else {
-            $error = "There was an error registering your account.";
+            // Cek apakah email sudah ada di database
+            $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $email_result = $stmt->get_result();
+
+            if ($email_result->num_rows > 0) {
+                // Email sudah terdaftar
+                $error = "Invalid email. This email is already registered.";
+            } else {
+                // Hash password untuk keamanan
+                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+                // Siapkan query untuk insert data
+                $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+                $stmt->bind_param("sss", $username, $email, $hashed_password);
+
+                // Eksekusi query
+                if ($stmt->execute()) {
+                    header("Location: login.php"); // Redirect ke halaman login setelah berhasil register
+                    exit();
+                } else {
+                    $error = "There was an error registering your account.";
+                }
+            }
         }
 
         $stmt->close();
@@ -45,7 +67,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadFlow - Register</title>
-    <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/styles2.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
 <body>
