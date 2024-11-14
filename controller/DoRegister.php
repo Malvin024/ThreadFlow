@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Eksekusi query
                 if ($stmt->execute()) {
-                    header("Location: ../login.php"); // Redirect ke halaman login setelah berhasil register
+                    header('Location: ../login.php'); // Redirect ke halaman login setelah berhasil register
                     exit();
                 } else {
                     $error = "There was an error registering your account.";
