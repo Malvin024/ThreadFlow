@@ -2,61 +2,97 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-body, html {
-    height: 100%;
+body {
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
-    background-color: #090909;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
 }
-
 .login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
     text-align: center;
-    width: 300px;
-    background-color: #8f8e8e;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
-
 .logo img {
     width: 100px;
-    height: auto;
     margin-bottom: 20px;
 }
 
-.title {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
+.login-box {
+    margin-top: 10px;
 }
 
-.login-box form {
+h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    color: #dcdcdc;
+}
+
+form {
     display: flex;
     flex-direction: column;
 }
 
-.login-box input {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    outline: none;
+}
+
+input::placeholder {
+    color: #dcdcdc;
 }
 
 button {
-    padding: 10px;
-    background-color: #d1560e;
-    color: white;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #4b6cb7;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    transition: background 0.3s ease;
+    color: #fff;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #3b5998;
+}
+.extra-links {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.extra-links a {
+    color: #9ac0fa;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.extra-links a:hover {
+    color: #d1e0fc;
 }
