@@ -68,7 +68,6 @@
                             <td>User C</td>
                             <td>2024-11-12</td>
                         </tr>
-                        <!-- Tambahkan lebih banyak baris postingan terbaru jika diperlukan -->
                     </tbody>
                 </table>
             </div>
@@ -90,7 +89,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Sample subjects; repeat as necessary to simulate multiple pages -->
                         <tr>
                             <td>Subject 1</td>
                             <td>User A</td>
@@ -107,7 +105,6 @@
                             <td>20</td>
                             <td>News</td>
                         </tr>
-                        <!-- Tambahkan lebih banyak row sesuai kebutuhan untuk simulasi pagination -->
                     </tbody>
                 </table>
 
@@ -135,7 +132,22 @@
 
     <!-- Footer -->
     <footer>
-        <p><a href="#about-us">About Us</a> | <a href="#contact-us">Contact Us</a></p>
+        <div class="footer-content">
+            <h3>About Us</h3>
+            <p>
+                ThreadFlow adalah platform forum diskusi modern yang bertujuan untuk menghubungkan orang-orang melalui percakapan yang bermakna. 
+                Kami menyediakan ruang bagi pengguna untuk berbagi ide, berita, dan pengalaman di berbagai bidang seperti teknologi, acara lokal, dan diskusi umum.
+            </p>
+            <h4>Contact Us</h4>
+            <p>
+                Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami:
+            </p>
+            <p>
+                <strong>Email:</strong> support@threadflow.com <br>
+                <strong>Phone:</strong> +123-456-7890
+            </p>
+            <p>&copy; 2024 ThreadFlow - Semua Hak Cipta Dilindungi</p>
+        </div>
     </footer>
 
     <script>
