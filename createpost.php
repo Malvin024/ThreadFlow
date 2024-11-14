@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'database.php'; // Asumsi ada koneksi database di file ini
+require_once 'controller/connection.php'; // Asumsi ada koneksi database di file ini
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Post - ThreadFlow</title>
-    <link rel="stylesheet" href="style.css"> <!-- Asumsi ada file CSS terpisah -->
+    <link rel="stylesheet" href="/CSS/createpost.css"> <!-- Asumsi ada file CSS terpisah -->
 </head>
 <body>
 
@@ -89,6 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="category">Category:</label>
             <select name="category" id="category" required>
                 <option value="">Select Category</option>
+                <option value="Gaming">Gaming</option>
                 <?php foreach ($categories as $category): ?>
                     <option value="<?php echo $category['category_id']; ?>">
                         <?php echo htmlspecialchars($category['category_name']); ?>
