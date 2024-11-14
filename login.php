@@ -21,7 +21,7 @@
                 <div class="extra-links">
                     <a href="#">Forgot Password?</a>
                     <span>|</span>
-                    <a href="#">Sign Up</a>
+                    <a href="/register.php">Sign Up</a>
                 </div>
             </form>
         </div>
