@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="register-container">
-        <div class="logo">
+        <div class="logo1">
             <img src="/Images/logo.png" alt="Logo">
         </div>
         <h1>Create Account</h1>
