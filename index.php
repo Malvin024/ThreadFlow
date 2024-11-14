@@ -135,24 +135,24 @@
         <div class="footer-content">
             <h3>About Us</h3>
             <p>
-                ThreadFlow adalah platform forum diskusi modern yang bertujuan untuk menghubungkan orang-orang melalui percakapan yang bermakna. 
-                Kami menyediakan ruang bagi pengguna untuk berbagi ide, berita, dan pengalaman di berbagai bidang seperti teknologi, acara lokal, dan diskusi umum.
+                ThreadFlow is a modern discussion forum platform designed to connect people through meaningful conversations. 
+                We provide a space for users to share ideas, news, and experiences across various fields such as technology, local events, and general discussions.
             </p>
             <h4>Contact Us</h4>
             <p>
-                Jika Anda memiliki pertanyaan atau membutuhkan bantuan, jangan ragu untuk menghubungi kami:
+                If you have any questions or need assistance, feel free to contact us:
             </p>
             <p>
                 <strong>Email:</strong> support@threadflow.com <br>
                 <strong>Phone:</strong> +123-456-7890
             </p>
-            <p>&copy; 2024 ThreadFlow - Semua Hak Cipta Dilindungi</p>
+            <p>&copy; 2024 ThreadFlow - Copyright</p>
         </div>
     </footer>
 
     <script>
         function createPost() {
-            alert("Navigasi ke halaman buat post baru.");
+            window.location.href = 'createpost.php';
         }
         function refreshPage() {
             location.reload();
