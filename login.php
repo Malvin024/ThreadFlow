@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadFlow - Login</title>
-    <link rel="stylesheet" href="/CSS/styles2.css">
+    <link rel="stylesheet" href="/CSS/styles.css">
 </head>
 <body>
     <div class="login-container">
@@ -19,7 +19,7 @@
                 <input type="password" name="password" placeholder="Password" required>
                 <button type="submit">Login</button>
                 <div class="extra-links">
-                    <a href="#">Forgot Password?</a>
+                    <a href="/forgetpassword.php">Forgot Password?</a>
                     <span>|</span>
                     <a href="/register.php">Sign Up</a>
                 </div>
