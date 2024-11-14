@@ -173,3 +173,98 @@ button:hover {
 .register-container .extra-links a:hover {
     color: #d1e0fc;
 }
+
+.forgot-password-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    background: rgba(0, 0, 50, 0.75);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.forgot-password-container .logo img {
+    width: 80px;
+    margin-bottom: 20px;
+}
+
+.forgot-password-container h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.forgot-password-container .subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #b0c4de;
+}
+
+.forgot-password-box {
+    margin-top: 20px;
+}
+
+.forgot-password-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.forgot-password-box input[type="email"] {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-password-box input::placeholder {
+    color: #b3c2d1;
+}
+
+.forgot-password-box input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #4da6ff;
+}
+
+.forgot-password-box button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #4da6ff, #1e90ff);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+.forgot-password-box button:hover {
+    background: linear-gradient(135deg, #1e90ff, #4da6ff);
+}
+
+.forgot-password-container .extra-links {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.forgot-password-container .extra-links a {
+    color: #80c9ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password-container .extra-links a:hover {
+    color: #d1e0fc;
+}
