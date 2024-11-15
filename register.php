@@ -1,11 +1,5 @@
 <?php
 session_start();
-
-// Menampilkan error jika ada
-if (isset($_SESSION['error'])) {
-    $errorMessage = $_SESSION['error'];
-    unset($_SESSION['error']); // Clear error after displaying
-}
 ?>
 
 <!DOCTYPE html>
@@ -27,17 +21,19 @@ if (isset($_SESSION['error'])) {
         <p class="subtitle">Join ThreadFlow today!</p>
 
         <!-- Menampilkan error jika ada -->
-        <?php if (isset($errorMessage)): ?>
-            <p style="color: red;"><?php echo htmlspecialchars($errorMessage); ?></p>
+        <?php if (isset($_SESSION['error'])): ?>
+            <p style="color: red;"><?php echo $_SESSION['error']; ?></p>
+            <?php unset($_SESSION['error']); // Clear error after displaying ?>
         <?php endif; ?>
 
         <div class="login-box">
-            <form action="DoRegister.php" method="POST">
+            <form action="/controller/DoRegister.php" method="POST">
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="password" name="confirm-password" placeholder="Confirm Password" required>
                 
+                <!-- Menambahkan pesan persyaratan password -->
                 <p class="password-requirements">
                     Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.
                 </p>
