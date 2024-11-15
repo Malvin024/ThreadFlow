@@ -1,29 +1,3 @@
-<?php
-session_start();
-
-// Set error and form values from the session, if available
-$error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
-$title = isset($_SESSION['title']) ? $_SESSION['title'] : '';
-$content = isset($_SESSION['content']) ? $_SESSION['content'] : '';
-$category_id = isset($_SESSION['category_id']) ? $_SESSION['category_id'] : '';
-
-// Mendapatkan daftar kategori untuk pilihan dalam form
-require_once './controller/connection.php'; // Include koneksi ke database
-
-$query = "SELECT * FROM categories";
-$result = $conn->query($query);
-
-$categories = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $categories[] = $row;
-    }
-}
-
-// Clear session data after loading
-unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id']);
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -52,25 +26,26 @@ unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['c
         <h2>Create New Post</h2>
 
         <!-- Menampilkan error jika ada -->
-        <?php if (!empty($error)): ?>
-            <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+        <?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($_SESSION['error']); ?></p>
         <?php endif; ?>
 
         <label for="title">Title:</label>
-        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>" required>
+        <input type="text" name="title" id="title" value="<?php echo isset($_SESSION['title']) ? htmlspecialchars($_SESSION['title']) : ''; ?>" required>
         
         <label for="category">Category:</label>
         <select name="category" id="category" required>
             <option value="">Select Category</option>
-            <?php foreach ($categories as $category): ?>
-                <option value="<?php echo $category['category_id']; ?>" <?php if ($category['category_id'] == $category_id) echo 'selected'; ?>>
+            <!-- Assuming categories are preloaded via PHP -->
+            <?php foreach ($_SESSION['categories'] as $category): ?>
+                <option value="<?php echo $category['category_id']; ?>" <?php echo (isset($_SESSION['category_id']) && $_SESSION['category_id'] == $category['category_id']) ? 'selected' : ''; ?>>
                     <?php echo htmlspecialchars($category['category_name']); ?>
                 </option>
             <?php endforeach; ?>
         </select>
 
         <label for="content">Content:</label>
-        <textarea name="content" id="content" rows="8" required><?php echo htmlspecialchars($content); ?></textarea>
+        <textarea name="content" id="content" rows="8" required><?php echo isset($_SESSION['content']) ? htmlspecialchars($_SESSION['content']) : ''; ?></textarea>
 
         <button type="submit">Submit Post</button>
     </form>
