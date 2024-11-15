@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 // Clear previous session data
                 unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id'], $_SESSION['categories']);
-                header('Location: ../index.php'); // Redirect to homepage after successful post
+                header('Location: ../home.php'); // Redirect to homepage after successful post
                 exit();
             } else {
                 $_SESSION['error'] = "Failed to submit your post. Please try again.";

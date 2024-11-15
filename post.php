@@ -66,18 +66,21 @@ list($post_content, $comments) = explode("<!-- COMMENTS -->", $post['content'] .
 
     <!-- Header -->
     <header>
+    <a href="home.php" class="header-logo">
         <h1>ThreadFlow</h1>
-        <div class="header-right">
-            <?php
-            if (isset($_SESSION['username'])) {
-                $loggedInUser = htmlspecialchars($_SESSION['username']);
-                echo "<span class='user-name'>Welcome, $loggedInUser</span>";
-            } else {
-                echo "<span class='user-name'><a href='login.php'>Login</a> / <a href='register.php'>Register</a></span>";
-            }
-            ?>
-        </div>
-    </header>
+    </a>
+    <div class="header-right">
+        <?php
+        if (isset($_SESSION['username'])) {
+            $loggedInUser = htmlspecialchars($_SESSION['username']);
+            echo "<span class='user-name'>Welcome, $loggedInUser</span>";
+        } else {
+            echo "<span class='user-name'><a href='login.php'>Login</a> / <a href='register.php'>Register</a></span>";
+        }
+        ?>
+    </div>
+</header>
+
 
     <!-- Main Content -->
     <main>
