@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once './controller/connection.php'; // Asumsi ada koneksi database di file ini
+require_once './connection.php'; // Asumsi ada koneksi database di file ini
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -8,21 +8,11 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Mendapatkan daftar kategori untuk pilihan dalam form
-$query = "SELECT * FROM categories";
-$result = $conn->query($query);
-
-$categories = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $categories[] = $row;
-    }
-}
-
 // Inisialisasi variabel untuk error handling
-$error = '';
 $title = '';
 $content = '';
+$category_id = '';
+$error = '';
 
 // Proses saat form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,9 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validasi input
     if (empty($title) || empty($content)) {
-        $error = "Title and Content are required.";
+        $_SESSION['error'] = "Title and Content are required.";
     } elseif (!ctype_digit($category_id)) {
-        $error = "Invalid category selected.";
+        $_SESSION['error'] = "Invalid category selected.";
     } else {
         // Siapkan statement untuk menambahkan post
         $stmt = $conn->prepare("INSERT INTO posts (user_id, category_id, title, content) VALUES (?, ?, ?, ?)");
@@ -42,12 +32,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Eksekusi statement
         if ($stmt->execute()) {
+            // Clear any previous error messages
+            unset($_SESSION['error']);
             header('Location: index.php'); // Redirect ke halaman utama setelah post berhasil
             exit();
         } else {
-            $error = "There was an error submitting your post.";
+            $_SESSION['error'] = "There was an error submitting your post.";
         }
         $stmt->close();
     }
+
+    // Store submitted form data in session to repopulate in case of error
+    $_SESSION['title'] = $title;
+    $_SESSION['content'] = $content;
+    $_SESSION['category_id'] = $category_id;
+
+    // Redirect back to the form if there's an error
+    header("Location: ../createpost.php");
+    exit();
 }
 ?>
