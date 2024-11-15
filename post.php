@@ -1,14 +1,14 @@
 <?php
-// Menyertakan file koneksi
+// Include the connection file
 include 'controller/connection1.php';
 
-// Memulai sesi pengguna
+// Start the session
 session_start();
 
-// Mendapatkan ID posting dari URL
+// Get the post ID from the URL
 $post_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Query untuk mendapatkan detail posting
+// Query to get the post details
 $sql_post = "SELECT * FROM posts WHERE post_id = ?";
 $stmt = $conn->prepare($sql_post);
 $stmt->bind_param("i", $post_id);
@@ -21,32 +21,36 @@ if (!$post) {
     exit;
 }
 
-// Update jumlah views
+// Update view count
 $sql_update_views = "UPDATE posts SET views = views + 1 WHERE post_id = ?";
 $stmt_update_views = $conn->prepare($sql_update_views);
 $stmt_update_views->bind_param("i", $post_id);
 $stmt_update_views->execute();
 
-// Proses pengiriman komentar
+// Process comment submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['username'])) {
     $comment = trim($_POST['comment']);
     if (!empty($comment)) {
-        // Tambahkan komentar ke konten postingan dengan pemisah
-        $updated_content = $post['content'] . "\n<!-- COMMENTS -->\n<strong>" . htmlspecialchars($_SESSION['username']) . ":</strong> " . htmlspecialchars($comment) . "\n";
+        // Get the current time for the comment
+        $comment_time = date('Y-m-d H:i:s');
+        $username = $_SESSION['username'];
+
+        // Add the comment to the content with proper formatting
+        $new_comment = "<strong>" . htmlspecialchars($username) . ":</strong> " . htmlspecialchars($comment) . " <em>on " . $comment_time . "</em>\n";
         
-        // Update konten di database
-        $sql_update_content = "UPDATE posts SET content = ?, replies = replies + 1 WHERE post_id = ?";
+        // Update the post's content with the new comment
+        $sql_update_content = "UPDATE posts SET content = CONCAT(content, '\n<!-- COMMENTS -->', ?) WHERE post_id = ?";
         $stmt_update_content = $conn->prepare($sql_update_content);
-        $stmt_update_content->bind_param("si", $updated_content, $post_id);
+        $stmt_update_content->bind_param("si", $new_comment, $post_id);
         $stmt_update_content->execute();
 
-        // Redirect ulang ke halaman untuk menghindari pengiriman ulang form
+        // Redirect to avoid form resubmission
         header("Location: post.php?id=$post_id");
         exit;
     }
 }
 
-// Memisahkan isi postingan dan komentar
+// Separate post content and comments
 list($post_content, $comments) = explode("<!-- COMMENTS -->", $post['content'] . "\n<!-- COMMENTS -->");
 ?>
 
@@ -77,49 +81,57 @@ list($post_content, $comments) = explode("<!-- COMMENTS -->", $post['content'] .
 
     <!-- Main Content -->
     <main>
-        <article>
+            <article>
             <h2><?php echo htmlspecialchars($post['title']); ?></h2>
-            <p><em>By User ID <?php echo htmlspecialchars($post['user_id']); ?> on <?php echo htmlspecialchars($post['created_at']); ?></em></p>
+            <div class="post-meta">
+                <span><strong>By:</strong> <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                <span class="post-date"><?php echo htmlspecialchars($post['created_at']); ?></span>
+            </div>
             <div class="post-content">
                 <?php echo nl2br(htmlspecialchars($post_content)); ?>
             </div>
             <p><strong>Views:</strong> <?php echo $post['views']; ?> | <strong>Replies:</strong> <?php echo $post['replies']; ?></p>
         </article>
 
-        <!-- Comment Section -->
-        <section id="comments">
-            <h3>Comments</h3>
-            <?php if (isset($_SESSION['username'])): ?>
-                <!-- Form untuk menambahkan komentar -->
-                <form method="POST">
-                    <textarea name="comment" rows="4" placeholder="Write your comment here..." required></textarea>
-                    <button type="submit">Post Comment</button>
-                </form>
-            <?php else: ?>
-                <p><strong>You must <a href="login.php">login</a> to comment.</strong></p>
-            <?php endif; ?>
 
-            <!-- Daftar Komentar -->
-            <ul class="comment-list">
-                <?php
-                if (!empty(trim($comments))) {
-                    $comment_lines = explode("\n", trim($comments));
-                    foreach ($comment_lines as $line) {
-                        if (!empty(trim($line))) {
-                            echo "<li>" . nl2br($line) . "</li>";
-                        }
-                    }
-                } else {
-                    echo "<p>No comments yet.</p>";
+        <!-- Comment Section -->
+        <!-- Comment Section -->
+<section id="comments">
+    <h3>Comments</h3>
+    <?php if (isset($_SESSION['username'])): ?>
+        <!-- Form for adding a comment -->
+        <form method="POST">
+            <textarea name="comment" rows="4" placeholder="Write your comment here..." required></textarea>
+            <button type="submit">Post Comment</button>
+        </form>
+    <?php else: ?>
+        <p><strong>You must <a href="login.php">login</a> to comment.</strong></p>
+    <?php endif; ?>
+
+    <!-- Display Comments -->
+    <ul class="comment-list">
+        <?php
+        if (!empty(trim($comments))) {
+            $comment_lines = explode("\n", trim($comments));
+            foreach ($comment_lines as $line) {
+                if (!empty(trim($line))) {
+                    // Split comment and timestamp
+                    $parts = explode(" <em>", $line);
+                    $comment_text = $parts[0]; // Comment text
+                    $comment_time = isset($parts[1]) ? $parts[1] : ''; // Date part
+                    echo "<li><div class='comment-text'>" . nl2br($comment_text) . "</div><div class='comment-time'>" . htmlspecialchars($comment_time) . "</div></li>";
                 }
-                ?>
-            </ul>
-        </section>
-    </main>
+            }
+        } else {
+            echo "<p>No comments yet.</p>";
+        }
+        ?>
+    </ul>
+</section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 ThreadFlow</p>
+        <t>&copy; 2024 ThreadFlow</t>
     </footer>
 
 </body>
