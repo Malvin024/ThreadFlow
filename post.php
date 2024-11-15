@@ -1,6 +1,6 @@
 <?php
 // Menyertakan file koneksi
-include 'controller/connection.php';
+include 'controller/connection1.php';
 
 // Memulai sesi pengguna
 session_start();
