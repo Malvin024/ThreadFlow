@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once 'connection.php'; // Menghubungkan ke database
+require_once 'connection.php'; // Ensure the correct path to the connection file
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
-    exit();
+    exit(); // Redirect to login page if the user is not logged in
 }
 
 // Inisialisasi variabel untuk error handling
@@ -21,8 +21,12 @@ $result = $conn->query($query);
 $categories = [];
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $categories[] = $row;
+        $categories[] = $row; // Store categories in an array
     }
+} else {
+    $_SESSION['error'] = "Failed to fetch categories from the database.";
+    header('Location: ../create.php');
+    exit(); // Redirect if categories can't be fetched
 }
 
 // Simpan kategori ke session untuk digunakan di halaman create.php
@@ -30,15 +34,16 @@ $_SESSION['categories'] = $categories;
 
 // Proses saat form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = trim($_POST['title']);
-    $content = trim($_POST['content']);
+    // Trim and sanitize user inputs
+    $title = htmlspecialchars(trim($_POST['title']));
+    $content = htmlspecialchars(trim($_POST['content']));
     $category_id = $_POST['category'];
 
     // Validasi input
     if (empty($title) || empty($content)) {
-        $_SESSION['error'] = "Title and Content are required.";
+        $_SESSION['error'] = "Title and Content are required."; // Error message
     } elseif (!ctype_digit($category_id)) {
-        $_SESSION['error'] = "Invalid category selected.";
+        $_SESSION['error'] = "Invalid category selected."; // Invalid category ID
     } else {
         // Siapkan statement untuk menambahkan post
         $stmt = $conn->prepare("INSERT INTO posts (user_id, category_id, title, content) VALUES (?, ?, ?, ?)");
@@ -48,15 +53,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Eksekusi statement
             if ($stmt->execute()) {
                 // Clear previous session data
-                unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id']);
-                header('Location: ../index.php'); // Redirect ke halaman utama setelah post berhasil
+                unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id'], $_SESSION['categories']);
+                header('Location: ../index.php'); // Redirect to homepage after successful post
                 exit();
             } else {
                 $_SESSION['error'] = "Failed to submit your post. Please try again.";
             }
             $stmt->close();
         } else {
-            $_SESSION['error'] = "Failed to prepare the database query.";
+            $_SESSION['error'] = "Failed to prepare the database query."; // Error preparing statement
         }
     }
 

@@ -1,3 +1,22 @@
+<?php
+include 'controller/DoCreatePost.php';
+
+// Ambil postingan berdasarkan ID
+$post_id = $_GET['id'];
+$sql_post = "SELECT * FROM posts WHERE post_id = ?";
+$stmt = $conn->prepare($sql_post);
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$post = $stmt->get_result()->fetch_assoc();
+
+// Ambil komentar terkait
+$sql_comments = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC";
+$stmt = $conn->prepare($sql_comments);
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$comments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>  
