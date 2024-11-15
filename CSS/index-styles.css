@@ -186,3 +186,44 @@ button {
 button:hover {
     background-color: #002a4d; /* Darker shade of blue on hover */
 }
+
+.profile-picture {
+    width: 40px;   /* Adjust the width to your desired size */
+    height: 40px;  /* Adjust the height to match width for a square image */
+    border-radius: 50%;  /* This makes the image circular */
+    object-fit: cover;   /* Ensures the image fits well within the circle */
+    margin-left: 10px;   /* Adds some space from the text or other elements */
+    border: 2px solid #fff;  /* Optional: Adds a white border around the picture */
+}
+
+/* Styling untuk user info (username dan foto profil) */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* Tambahkan jarak antara gambar profil dan teks */
+}
+
+.user-info p {
+    margin: 0;
+    color: #fff; /* Pastikan warna teks tetap putih sesuai tema header */
+}
+
+.user-info a {
+    text-decoration: none;
+}
+
+.user-info a img {
+    border: none;
+}
+
+.profile-pic {
+    width: 100px; /* Mengatur lebar gambar menjadi lebih kecil */
+    height: 100px; /* Tinggi sama dengan lebar untuk membuatnya kotak */
+    border-radius: 50%; /* Membuat gambar berbentuk bulat */
+    object-fit: cover; /* Mengisi area gambar dengan proporsi yang benar */
+    border: 2px solid #fff; /* Opsional: Tambahkan border putih untuk membuatnya lebih menarik */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Opsional: Tambahkan bayangan */
+}
+
+
+
