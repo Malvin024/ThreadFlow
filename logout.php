@@ -20,7 +20,7 @@ $redirect_delay = 3; // Redirect delay in seconds
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logout - ThreadFlow</title>
-    <link rel="stylesheet" href="/CSS/logout-styles.css"> <!-- Include your CSS -->
+    <link rel="stylesheet" href="/CSS/styles.css"> <!-- Include your CSS -->
 </head>
 <body>
     <div class="logout-container">
