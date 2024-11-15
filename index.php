@@ -1,3 +1,11 @@
+<?php
+// PHP logic to trigger the modal when the form is submitted
+$showPopup = false;
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_post'])) {
+    $showPopup = true;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadFlow - Forum Diskusi Modern</title>
     <link rel="stylesheet" href="/CSS/index-styles.css">
+    <link rel="stylesheet" href="/CSS/modal-styles.css"> <!-- Link to the new CSS file -->
 </head>
 <body>
 
@@ -21,7 +30,9 @@
 
     <!-- Subheader -->
     <div class="subheader">
-        <button onclick="createPost()">Create Post</button>
+        <form id="createPostForm" onsubmit="showModal(event)">
+            <button type="submit" name="create_post">Create Post</button>
+        </form>
         <button onclick="refreshPage()">Refresh</button>
         <label for="order">Order:</label>
         <select id="order">
@@ -130,6 +141,14 @@
         </div>
     </main>
 
+    <!-- Modal Popup -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>You need to login first!</p>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -151,14 +170,21 @@
     </footer>
 
     <script>
-        function createPost() {
-            window.location.href = 'createpost.php';
-        }
         function refreshPage() {
             location.reload();
         }
-     
+         function showModal(event) {
+            event.preventDefault(); // Prevent the form from submitting and refreshing the page
+            document.getElementById('loginModal').style.display = 'block';
+        }
 
+        function closeModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
     </script>
 
 </body>
