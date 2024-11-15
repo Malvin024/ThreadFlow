@@ -17,22 +17,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fileName = basename($uploadedFile['name']);
         $filePath = 'uploads/' . $fileName;
 
-        // Move the uploaded file to the 'uploads' directory
-        if (move_uploaded_file($uploadedFile['tmp_name'], $filePath)) {
-            // Update the database with the new profile picture
-            $query = "UPDATE users SET profile_picture = ? WHERE username = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param('ss', $fileName, $loggedInUser);
-            $stmt->execute();
+        // Check file type (e.g., only allow jpg, jpeg, png)
+        $allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        $fileType = mime_content_type($uploadedFile['tmp_name']);
+        
+        if (in_array($fileType, $allowedFileTypes)) {
+            // Check file size (limit to 2MB)
+            if ($uploadedFile['size'] <= 2 * 1024 * 1024) {
+                // Move the uploaded file to the 'uploads' directory
+                if (move_uploaded_file($uploadedFile['tmp_name'], $filePath)) {
+                    // Update the database with the new profile picture
+                    $query = "UPDATE users SET profile_picture = ? WHERE username = ?";
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param('ss', $fileName, $loggedInUser);
+                    $stmt->execute();
 
-            // Update the session with the new profile picture
-            $_SESSION['profile_picture'] = $fileName; // Perbarui sesi dengan foto baru
+                    // Update the session with the new profile picture
+                    $_SESSION['profile_picture'] = $fileName; // Perbarui sesi dengan foto baru
 
-            // Redirect to home.php after a successful upload
-            header('Location: home.php');
-            exit();
+                    // Redirect to home.php after a successful upload
+                    header('Location: home.php');
+                    exit();
+                } else {
+                    echo "<p class='error-message'>Error uploading file. Please try again.</p>";
+                }
+            } else {
+                echo "<p class='error-message'>File is too large. Maximum size is 2MB.</p>";
+            }
         } else {
-            echo "<p class='error-message'>Error uploading file. Please try again.</p>";
+            echo "<p class='error-message'>Invalid file type. Only JPG, JPEG, and PNG are allowed.</p>";
         }
     }
 }
