@@ -1,73 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+<?php
+session_start();
+session_unset();
+session_destroy();
+?>
 
-body {
-    font-family: 'Poppins', sans-serif; /* Menggunakan Poppins */
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-    color: #333;
-}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - ThreadFlow</title>
+    <link rel="stylesheet" href="/CSS/logout-styles.css"> <!-- Pastikan CSS yang benar di-link -->
+</head>
+<body>
 
-.container {
-    max-width: 500px;
-    margin: 100px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+    <div class="container">
+        <h2>Anda telah berhasil logout</h2>
+        <p>Terima kasih telah mengunjungi ThreadFlow. Kami berharap dapat bertemu lagi!</p>
+        <a href="login.php" class="logout-btn">Login Kembali</a>
+    </div>
 
-h2 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-}
+    <footer>
+        <p>&copy; 2024 ThreadFlow - All rights reserved</p>
+    </footer>
 
-p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 30px;
-}
-
-.logout-btn {
-    background-color: #007BFF;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.logout-btn:hover {
-    background-color: #0056b3;
-}
-
-a {
-    color: #007BFF;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-footer {
-    margin-top: 30px;
-    font-size: 14px;
-    color: #888;
-}
-
-footer a {
-    color: #007BFF;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
+</body>
+</html>
