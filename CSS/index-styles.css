@@ -34,11 +34,22 @@ header h1 {
     border: none;
     border-radius: 3px;
     padding: 5px;
-    width: 200px;
+    width: 180px; /* Make the search box smaller */
+    margin-left: 50px;
 }
 
 .search-box::placeholder {
     color: #888;
+}
+
+.search-button {
+    padding: 5px 10px; /* Adjust button size */
+    background-color: #3479ae;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px; /* Move the button to the right */
 }
 
 header nav a {
@@ -65,6 +76,7 @@ header nav a:hover {
     border: none;
     border-radius: 3px;
     cursor: pointer;
+    
 }
 
 .subheader button {

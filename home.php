@@ -7,6 +7,9 @@ $items_per_page = 10;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $items_per_page;
 
+// Capture the search query if provided
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Get the sort option (default to latest)
 $sort_option = isset($_GET['order']) ? $_GET['order'] : 'latest';
 
@@ -24,27 +27,33 @@ switch ($sort_option) {
         break;
 }
 
-// Query to get the latest posts (3 posts for the "Latest Posts" section)
-$sql_latest = "
-    SELECT 
-        posts.post_id, 
-        posts.title, 
-        posts.content, 
-        posts.created_at AS post_created_at,
-        categories.category_name, 
-        users.username AS author_name,
-        users.profile_picture
-    FROM 
-        posts
-    JOIN 
-        categories ON posts.category_id = categories.category_id
-    JOIN 
-        users ON posts.user_id = users.user_id
-    $order_by
-    LIMIT 3
-";
+// Modify the query to filter based on search query if provided
+$search_condition = $search_query ? "WHERE posts.title LIKE '%$search_query%' OR posts.content LIKE '%$search_query%'" : '';
 
-$latest_result = $conn->query($sql_latest);
+// Query to get the latest posts (3 posts for the "Latest Posts" section)
+$latest_result = null; // Initialize as null to avoid undefined variable errors
+if (!$search_query) {  // Only query the latest posts if no search is active
+    $sql_latest = "
+        SELECT 
+            posts.post_id, 
+            posts.title, 
+            posts.content, 
+            posts.created_at AS post_created_at,
+            categories.category_name, 
+            users.username AS author_name,
+            users.profile_picture
+        FROM 
+            posts
+        JOIN 
+            categories ON posts.category_id = categories.category_id
+        JOIN 
+            users ON posts.user_id = users.user_id
+        $search_condition
+        $order_by
+        LIMIT 3
+    ";
+    $latest_result = $conn->query($sql_latest);
+}
 
 // Query to get all posts from all users, sorted by creation date, with pagination
 $sql_all_posts = "
@@ -62,6 +71,7 @@ $sql_all_posts = "
         categories ON posts.category_id = categories.category_id
     JOIN 
         users ON posts.user_id = users.user_id
+    $search_condition
     $order_by
     LIMIT $items_per_page OFFSET $offset
 ";
@@ -69,7 +79,7 @@ $sql_all_posts = "
 $result_all_posts = $conn->query($sql_all_posts);
 
 // Get total number of posts to calculate pagination for the all posts section
-$sql_count = "SELECT COUNT(*) AS total_posts FROM posts";
+$sql_count = "SELECT COUNT(*) AS total_posts FROM posts $search_condition";
 $total_result = $conn->query($sql_count);
 $total_row = $total_result->fetch_assoc();
 $total_posts = $total_row['total_posts'];
@@ -101,7 +111,10 @@ $is_logged_in = isset($_SESSION['username']);
             <h1>ThreadFlow</h1>
         </a>
         <div class="header-right">
-            <input type="text" class="search-box" placeholder="Cari di ThreadFlow...">
+            <form method="GET" action="home.php">
+                <input type="text" class="search-box" name="search" placeholder="Cari di ThreadFlow..." value="<?php echo htmlspecialchars($search_query); ?>">
+                <button type="submit" class="search-button">Search</button>
+            </form>
             <nav>
                 <?php if ($is_logged_in): ?>
                     <div class="user-info">
@@ -136,9 +149,10 @@ $is_logged_in = isset($_SESSION['username']);
         </select>
     </div>
 
-    <!-- Latest Post Section -->
+    <!-- Main Content Section -->
     <main>
-        <?php if ($page == 1): ?>  <!-- Only show latest posts on the first page -->
+        <!-- Remove Latest Posts section when search is active -->
+        <?php if ($page == 1 && !$search_query): ?>  
         <div class="section" id="latest-posts">
             <h2>Latest Posts</h2>
             <div class="section-content">
@@ -153,7 +167,7 @@ $is_logged_in = isset($_SESSION['username']);
                     <tbody>
                         <?php
                         // Display the latest 3 posts
-                        if ($latest_result->num_rows > 0) {
+                        if ($latest_result && $latest_result->num_rows > 0) {
                             while ($post = $latest_result->fetch_assoc()) {
                                 echo "<tr>";
                                 echo "<td><a href='post.php?id=" . htmlspecialchars($post['post_id']) . "'>" . htmlspecialchars($post['title']) . "</a></td>";
