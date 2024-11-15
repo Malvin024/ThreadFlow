@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validasi input
     if (empty($username) || empty($password)) {
-        $error = "Username and Password are required.";
+        $_SESSION['error'] = "Username and Password are required.";
     } else {
         // Siapkan query untuk mengambil data user berdasarkan username
         $stmt = $conn->prepare("SELECT user_id, username, password FROM users WHERE username = ?");
@@ -31,16 +31,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user_id'] = $user['user_id'];  // Gunakan user_id sebagai ID
                 $_SESSION['username'] = $user['username'];
 
+                // Hapus error jika ada dan login berhasil
+                unset($_SESSION['error']);
+
                 // Redirect ke halaman utama atau dashboard
                 header('Location: ../index.php'); // Ganti dengan halaman yang sesuai
                 exit();
             } else {
-                $error = "Invalid username or password.";
+                $_SESSION['error'] = "Invalid username or password.";
             }
         } else {
-            $error = "Invalid username or password.";
+            $_SESSION['error'] = "Invalid username or password.";
         }
 
         $stmt->close();
     }
+
+    // Redirect kembali ke halaman login jika ada error
+    header('Location: ../login.php');
+    exit();
 }
+
+$conn->close();
+?>
