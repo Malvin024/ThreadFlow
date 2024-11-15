@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'connection.php'; // Ensure the correct path to the connection file
+require_once 'connection1.php'; // Ensure the correct path to the connection file
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
