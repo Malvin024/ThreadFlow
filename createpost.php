@@ -37,7 +37,7 @@ if ($result && $result->num_rows > 0) {
     }
 } else {
     $_SESSION['error'] = "Failed to fetch categories from the database.";
-    header('Location: ../create.php');
+    header('Location: ../createpost.php');
     exit(); // Redirect if categories can't be fetched
 }
 
@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['category_id'] = $category_id;
 
     // Redirect kembali ke form jika ada error
-    header('Location: ../create.php');
+    header('Location: ../createpost.php');
     exit();
 }
 ?>
