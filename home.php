@@ -49,7 +49,8 @@ $is_logged_in = isset($_SESSION['username']);
                 <?php if ($is_logged_in): ?>
                     <div class="user-info">
                         <a href="profile.php">
-                            <img src="uploads/<?php echo htmlspecialchars($_SESSION['profile_picture'] ?? 'default-picture.jfif'); ?>" alt="Profile Picture" class="profile-picture">
+                            <!-- Add timestamp to prevent cache issue for the profile picture -->
+                            <img src="uploads/<?php echo htmlspecialchars($_SESSION['profile_picture'] ?? 'default-picture.jfif'); ?>?<?php echo time(); ?>" alt="Profile Picture" class="profile-picture">
                         </a>
                         <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?> | <a href="/logout.php">Logout</a></p>
                     </div>
@@ -62,7 +63,8 @@ $is_logged_in = isset($_SESSION['username']);
 
     <!-- Subheader -->
     <div class="subheader">
-        <button onclick="createPost()">Create Post</button>
+        <!-- Tombol Create Post yang mengarahkan ke createpost.php -->
+        <button onclick="window.location.href='createpost.php'">Create Post</button>
         <button onclick="refreshPage()">Refresh</button>
         <label for="order">Order:</label>
         <select id="order">
@@ -148,42 +150,20 @@ $is_logged_in = isset($_SESSION['username']);
                     </tbody>
                 </table>
 
-                <!-- Pagination Links -->
-                <div class="pagination">
-                    <a href="#">&laquo;</a>
-                    <a href="#" class="active">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
-                    <a href="#">5</a>
-                    <a href="#">&raquo;</a>
-                </div>
             </div>
-        </div>
-
-        <!-- Who is Online Section -->
-        <div class="online-info">
-            <p><strong>Who is Online</strong></p>
-            <p>Pengguna Online: <strong>5</strong></p>
-            <p>Pengguna Terdaftar: <strong>150</strong></p>
-            <p>Total Posts: <strong>2300</strong></p>
         </div>
     </main>
 
-    <!-- Modal Popup -->
-    <div id="loginModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <p>You need to login to create a post.</p>
-            <a href="login.php" class="login-btn">Login</a>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 ThreadFlow</p>
+        <p>&copy; 2024 ThreadFlow. All rights reserved.</p>
     </footer>
 
-    <script src="JS/script.js"></script>
+    <script src="JS/index.js"></script>
 </body>
 </html>
+
+<?php
+// Close the database connection
+$conn->close();
+?>
