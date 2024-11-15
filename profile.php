@@ -1,6 +1,14 @@
 <?php
+
+
+// Secure session settings
+ini_set('session.cookie_httponly', 1);  // Prevent JavaScript access to session cookies
+ini_set('session.use_only_cookies', 1); // Only use cookies for sessions
 session_start();
-include('controller/connection1.php'); // Include the database connection
+session_regenerate_id(true);             // Regenerate session ID to prevent session fixation
+
+// Include the database connection securely
+include('controller/connection1.php');
 
 // Check if user is logged in
 if (!isset($_SESSION['username'])) {

@@ -1,5 +1,13 @@
 <?php
+
+
+// Secure session settings
+ini_set('session.cookie_httponly', 1);  // Prevent JavaScript access to session cookies
+ini_set('session.use_only_cookies', 1); // Only use cookies for sessions
 session_start();
+session_regenerate_id(true);             // Regenerate session ID to prevent session fixation
+
+// Include the database connection securely
 include('controller/connection1.php');
 
 // Check if user is logged in
@@ -10,7 +18,12 @@ if (!isset($_SESSION['username'])) {
 
 $loggedInUser = $_SESSION['username'];
 
+// CSRF Token validation
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('CSRF token validation failed');
+    }
+
     // Handle the file upload
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0) {
         $uploadedFile = $_FILES['profile_picture'];
@@ -33,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt->execute();
 
                     // Update the session with the new profile picture
-                    $_SESSION['profile_picture'] = $fileName; // Perbarui sesi dengan foto baru
+                    $_SESSION['profile_picture'] = $fileName; // Update session with new profile picture
 
                     // Redirect to home.php after a successful upload
                     header('Location: home.php');
@@ -76,6 +89,9 @@ $user = $result->fetch_assoc();
         <div class="form-container">
             <h2>Change Your Profile Picture</h2>
             <form action="edit_profile.php" method="POST" enctype="multipart/form-data">
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <div class="form-group">
                     <label for="profile_picture">Upload New Profile Picture:</label>
                     <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
