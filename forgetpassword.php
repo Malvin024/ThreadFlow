@@ -2,9 +2,10 @@
 // Include the PHPMailer library
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
- // Include Composer's autoload if using Composer
+use PHPMailer\PHPMailer\SMTP;
+// Include Composer's autoload if using Composer
 require 'vendor/autoload.php';
-
+ 
 require_once 'controller/connection1.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,15 +33,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             //Server settings
             $mail->isSMTP();                                         // Set mailer to use SMTP
-            $mail->Host       = 'smtp.gmail.com';                      // Set the SMTP server to Gmail
+            $mail->Host       = 'smtp.example.com';                      // Set the SMTP server to Gmail
             $mail->SMTPAuth   = true;                                  // Enable SMTP authentication
-            $mail->Username   = 'salamdaribinjai692@gmail.com';                // SMTP username (your Gmail address)
-            $mail->Password   = 'gegegeming113';                   // SMTP password (App password generated from Gmail)
+            $mail->Username   = 'fundaofwebit@gmail.com';                // SMTP username (your Gmail address)
+            $mail->Password   = 'qponxqtdbxjpovei';                   // SMTP password (App password generated from Gmail)
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;        // Enable TLS encryption
             $mail->Port       = 587;                                   // TCP port for TLS
 
             //Recipients
-            $mail->setFrom('no-reply@yourdomain.com', 'ThreadFlow');
+            $mail->setFrom('salamdaribinjai692@gmail.com', 'ThreadFlow');
             $mail->addAddress($email);                                  // Add recipient's email address
 
             // Content
