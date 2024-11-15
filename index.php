@@ -157,6 +157,8 @@
         function refreshPage() {
             location.reload();
         }
+     
+
     </script>
 
 </body>
