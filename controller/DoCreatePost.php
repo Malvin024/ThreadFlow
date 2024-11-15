@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'connection.php'; // Assume this connects to the database
+require_once 'connection.php'; // Menghubungkan ke database
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -14,18 +14,18 @@ $content = '';
 $category_id = '';
 $error = '';
 
-// Get the list of categories for the dropdown
-$query = "SELECT * FROM categories";
+// Ambil daftar kategori untuk dropdown
+$query = "SELECT category_id, category_name FROM categories";
 $result = $conn->query($query);
 
 $categories = [];
-if ($result->num_rows > 0) {
+if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $categories[] = $row;
     }
 }
 
-// Store categories in session for use in create.php
+// Simpan kategori ke session untuk digunakan di halaman create.php
 $_SESSION['categories'] = $categories;
 
 // Proses saat form disubmit
@@ -42,26 +42,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Siapkan statement untuk menambahkan post
         $stmt = $conn->prepare("INSERT INTO posts (user_id, category_id, title, content) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("iiss", $_SESSION['user_id'], $category_id, $title, $content);
+        if ($stmt) {
+            $stmt->bind_param("iiss", $_SESSION['user_id'], $category_id, $title, $content);
 
-        // Eksekusi statement
-        if ($stmt->execute()) {
-            // Clear any previous error messages
-            unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id']);
-            header('Location: ../index.php'); // Redirect ke halaman utama setelah post berhasil
-            exit();
+            // Eksekusi statement
+            if ($stmt->execute()) {
+                // Clear previous session data
+                unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id']);
+                header('Location: ../index.php'); // Redirect ke halaman utama setelah post berhasil
+                exit();
+            } else {
+                $_SESSION['error'] = "Failed to submit your post. Please try again.";
+            }
+            $stmt->close();
         } else {
-            $_SESSION['error'] = "There was an error submitting your post.";
+            $_SESSION['error'] = "Failed to prepare the database query.";
         }
-        $stmt->close();
     }
 
-    // Store submitted form data in session to repopulate in case of error
+    // Simpan input form sebelumnya ke session untuk repopulasi jika terjadi error
     $_SESSION['title'] = $title;
     $_SESSION['content'] = $content;
     $_SESSION['category_id'] = $category_id;
 
-    // Redirect back to the form if there's an error
+    // Redirect kembali ke form jika ada error
     header('Location: ../create.php');
     exit();
 }
