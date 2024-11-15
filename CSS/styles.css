@@ -276,12 +276,11 @@ button:hover {
     color: #d1e0fc;
 }
 
-/* Styling untuk halaman logout */
 .logout-container {
     width: 100%;
     max-width: 420px;
     padding: 30px;
-    background: rgba(0, 0, 50, 0.75); /* Background semi-transparan seperti login */
+    background: rgba(0, 0, 50, 0.75);
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
@@ -320,3 +319,20 @@ button:hover {
     background: linear-gradient(135deg, #1e90ff, #4da6ff);
 }
 
+.logout-container .extra-links {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logout-container .extra-links a {
+    color: #80c9ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.logout-container .extra-links a:hover {
+    color: #d1e0fc;
+}
