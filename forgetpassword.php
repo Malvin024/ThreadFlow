@@ -1,12 +1,15 @@
 <?php
-// Include the PHPMailer library
+// Include the config file to load the credentials
+require_once 'config/smpt.php';  // Make sure this is at the top of your file
+require_once 'controller/connection1.php'; // Assuming you have a connection to your database
+
+// Include PHPMailer library
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
-// Include Composer's autoload if using Composer
+
+// Include Composer's autoload if you're using Composer
 require 'vendor/autoload.php';
- 
-require_once 'controller/connection1.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
@@ -31,27 +34,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail = new PHPMailer(true);
         
         try {
-            //Server settings
-            $mail->isSMTP();                                         // Set mailer to use SMTP
-            $mail->Host       = 'smtp.gmail.com';                      // Set the SMTP server to Gmail
-            $mail->SMTPAuth   = true;                                  // Enable SMTP authentication
-            $mail->Username   = 'gadaakunbos';                // SMTP username (your Gmail address)
-            $mail->Password   = 'gadaakun bos';                   // SMTP password (App password generated from Gmail)
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;        // Enable TLS encryption
-            $mail->Port       = 587;                                   // TCP port for TLS
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;            // Fetch the SMTP host from config.php
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_USERNAME;    // Fetch the SMTP username from config.php
+            $mail->Password = SMTP_PASSWORD;    // Fetch the SMTP password from config.php
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = SMTP_PORT;            // Fetch the SMTP port from config.php
 
-            //Recipients
-            $mail->setFrom('salamdaribinjai692@gmail.com', 'ThreadFlow');
-            $mail->addAddress($email);                                  // Add recipient's email address
+            // Recipients
+            $mail->setFrom(SMTP_FROM_EMAIL, SMTP_FROM_NAME);  // From email and name
+            $mail->addAddress($email);                       // Recipient's email
 
             // Content
-            $mail->isHTML(true);                                        // Set email format to HTML
+            $mail->isHTML(true);
             $mail->Subject = 'Password Reset Request';
-            $reset_link = "http://127.0.0.1:6969/resetpassword.php?token=" . $reset_token;
-            $mail->Body    = "Hello,\n\nClick the link below to reset your password:\n\n" . $reset_link . "\n\nThis link will expire in 1 hour.";
+            $reset_link = "https://yourdomain.com/resetpassword.php?token=" . $reset_token;
+            $mail->Body = "Hello,<br><br>Click the link below to reset your password:<br><br><a href='" . $reset_link . "'>Reset your password</a><br><br>This link will expire in 1 hour.";
 
+            // Send the email
             $mail->send();
-            echo "<p style='color: #4caf50;'>We have sent a password reset link to your email.</p>";
+            echo "<p style='color: #4caf50;'>If your email address is in our system, you will receive a password reset link shortly.</p>";
         } catch (Exception $e) {
             echo "<p style='color: #f44336;'>Failed to send email. Mailer Error: {$mail->ErrorInfo}</p>";
         }

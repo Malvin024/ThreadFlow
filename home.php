@@ -143,7 +143,7 @@ $is_logged_in = isset($_SESSION['username']);
         </a>
         <div class="header-right">
             <form method="GET" action="home.php">
-                <input type="text" class="search-box" name="search" placeholder="Cari di ThreadFlow..." value="<?php echo htmlspecialchars($search_query); ?>">
+                <input type="text" class="search-box" name="search" placeholder="Search here..." value="<?php echo htmlspecialchars($search_query); ?>">
                 <button type="submit" class="search-button">Search</button>
             </form>
             <nav>
