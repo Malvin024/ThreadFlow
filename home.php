@@ -1,3 +1,32 @@
+<?php
+session_start();
+include('controller/connection1.php');
+
+// Query to get all posts from all users, sorted by creation date
+$sql = "
+    SELECT 
+        posts.post_id, 
+        posts.title, 
+        posts.content, 
+        posts.created_at AS post_created_at,
+        categories.category_name, 
+        users.username AS author_name
+    FROM 
+        posts
+    JOIN 
+        categories ON posts.category_id = categories.category_id
+    JOIN 
+        users ON posts.user_id = users.user_id
+    ORDER BY 
+        posts.created_at DESC
+";
+
+$result = $conn->query($sql);
+
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_id']);
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,6 +35,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadFlow - Forum Diskusi Modern</title>
     <link rel="stylesheet" href="/CSS/index-styles.css">
+    <link rel="stylesheet" href="/CSS/modal-styles.css"> <!-- Link to the new CSS file -->
 </head>
 <body>
 
@@ -13,15 +43,14 @@
     <header>
         <h1>ThreadFlow</h1>
         <div class="header-right">
-            <?php
-            session_start(); // Memulai sesi
-            if (isset($_SESSION['username'])) {
-                $loggedInUser = htmlspecialchars($_SESSION['username']);
-                echo "<span class='user-name'>Welcome, $loggedInUser</span>";
-            } else {
-                echo "<span class='user-name'><a href='login.php'>Login</a> / <a href='register.php'>Register</a></span>";
-            }
-            ?>
+            <input type="text" class="search-box" placeholder="Cari di ThreadFlow...">
+            <nav>
+                <?php if ($is_logged_in): ?>
+                    <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?> | <a href="/logout.php">Logout</a></p>
+                <?php else: ?>
+                    <a href="/login.php">Login</a> | <a href="/register.php">Register</a>
+                <?php endif; ?>
+            </nav>
         </div>
     </header>
 
@@ -59,21 +88,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><a href="#post1">Post Terbaru 1</a></td>
-                            <td>User A</td>
-                            <td>2024-11-14</td>
-                        </tr>
-                        <tr>
-                            <td><a href="#post2">Post Terbaru 2</a></td>
-                            <td>User B</td>
-                            <td>2024-11-13</td>
-                        </tr>
-                        <tr>
-                            <td><a href="#post3">Post Terbaru 3</a></td>
-                            <td>User C</td>
-                            <td>2024-11-12</td>
-                        </tr>
+                        <?php
+                        // Display all posts dynamically
+                        if ($result->num_rows > 0) {
+                            while ($post = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td><a href='post.php?id=" . htmlspecialchars($post['post_id']) . "'>" . htmlspecialchars($post['title']) . "</a></td>";
+                                echo "<td>" . htmlspecialchars($post['author_name']) . "</td>";
+                                echo "<td>" . htmlspecialchars($post['post_created_at']) . "</td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='3'>No posts available yet. Be the first to create a post!</td></tr>";
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -136,6 +164,14 @@
         </div>
     </main>
 
+    <!-- Modal Popup -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>You need to login first!</p>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -157,13 +193,26 @@
     </footer>
 
     <script>
-        function createPost() {
-            window.location.href = 'createpost.php';
-        }
         function refreshPage() {
             location.reload();
+        }
+
+        function showModal(event) {
+            event.preventDefault(); // Prevent the form from submitting and refreshing the page
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        function createPost() {
+            window.location.href = 'createpost.php';
         }
     </script>
 
 </body>
 </html>
+
+<?php
+$conn->close();
+?>
