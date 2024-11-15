@@ -33,10 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             //Server settings
             $mail->isSMTP();                                         // Set mailer to use SMTP
-            $mail->Host       = 'smtp.example.com';                      // Set the SMTP server to Gmail
+            $mail->Host       = 'smtp.gmail.com';                      // Set the SMTP server to Gmail
             $mail->SMTPAuth   = true;                                  // Enable SMTP authentication
-            $mail->Username   = 'fundaofwebit@gmail.com';                // SMTP username (your Gmail address)
-            $mail->Password   = 'qponxqtdbxjpovei';                   // SMTP password (App password generated from Gmail)
+            $mail->Username   = 'gadaakunbos';                // SMTP username (your Gmail address)
+            $mail->Password   = 'gadaakun bos';                   // SMTP password (App password generated from Gmail)
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;        // Enable TLS encryption
             $mail->Port       = 587;                                   // TCP port for TLS
 
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Content
             $mail->isHTML(true);                                        // Set email format to HTML
             $mail->Subject = 'Password Reset Request';
-            $reset_link = "http://127.0.0.1/resetpassword.php?token=" . $reset_token;
+            $reset_link = "http://127.0.0.1:6969/resetpassword.php?token=" . $reset_token;
             $mail->Body    = "Hello,\n\nClick the link below to reset your password:\n\n" . $reset_link . "\n\nThis link will expire in 1 hour.";
 
             $mail->send();
