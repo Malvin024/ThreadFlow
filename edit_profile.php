@@ -25,8 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_param('ss', $fileName, $loggedInUser);
             $stmt->execute();
 
-            // Redirect to profile.php after a successful upload
-            header('Location: profile.php');
+            // Update the session with the new profile picture
+            $_SESSION['profile_picture'] = $fileName; // Perbarui sesi dengan foto baru
+
+            // Redirect to home.php after a successful upload
+            header('Location: home.php');
             exit();
         } else {
             echo "<p class='error-message'>Error uploading file. Please try again.</p>";
