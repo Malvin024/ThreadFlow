@@ -25,8 +25,8 @@ if (!$user) {
     exit();
 }
 
-// Set default profile picture if not set
-$profilePicture = $user['profile_picture'] ? $user['profile_picture'] : 'default-profile.png';
+// Set default profile picture if not set or if file does not exist
+$profilePicture = $user['profile_picture'] && file_exists('uploads/' . $user['profile_picture']) ? $user['profile_picture'] : 'default-picture.jfif';
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +36,16 @@ $profilePicture = $user['profile_picture'] ? $user['profile_picture'] : 'default
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - ThreadFlow</title>
     <link rel="stylesheet" href="/CSS/index-styles.css">
+    <style>
+        .profile-pic {
+            width: 100px; /* Lebih kecil */
+            height: 100px; /* Sesuaikan dengan width */
+            border-radius: 50%; /* Membuatnya bulat */
+            object-fit: cover; /* Menjaga proporsi gambar */
+            border: 2px solid #fff; /* Opsional: Border putih */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Opsional: bayangan */
+        }
+    </style>
 </head>
 <body>
     <header>
