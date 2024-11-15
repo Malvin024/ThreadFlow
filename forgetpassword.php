@@ -1,4 +1,10 @@
 <?php
+// Include the PHPMailer library
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+ // Include Composer's autoload if using Composer
+require 'vendor/autoload.php';
+
 require_once 'controller/connection1.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -20,16 +26,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sss", $reset_token, $reset_token_expires, $email);
         $stmt->execute();
 
-        // Send the reset link to the user's email
-        $reset_link = "http://yourdomain.com/resetpassword.php?token=" . $reset_token;
-        $subject = "Password Reset Request";
-        $message = "Hello,\n\nClick the link below to reset your password:\n\n" . $reset_link . "\n\nThis link will expire in 1 hour.";
-        $headers = "From: no-reply@yourdomain.com\r\n";
+        // Create a new PHPMailer instance
+        $mail = new PHPMailer(true);
+        
+        try {
+            //Server settings
+            $mail->isSMTP();                                         // Set mailer to use SMTP
+            $mail->Host       = 'smtp.gmail.com';                      // Set the SMTP server to Gmail
+            $mail->SMTPAuth   = true;                                  // Enable SMTP authentication
+            $mail->Username   = 'salamdaribinjai692@gmail.com';                // SMTP username (your Gmail address)
+            $mail->Password   = 'gegegeming113';                   // SMTP password (App password generated from Gmail)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;        // Enable TLS encryption
+            $mail->Port       = 587;                                   // TCP port for TLS
 
-        if (mail($email, $subject, $message, $headers)) {
+            //Recipients
+            $mail->setFrom('no-reply@yourdomain.com', 'ThreadFlow');
+            $mail->addAddress($email);                                  // Add recipient's email address
+
+            // Content
+            $mail->isHTML(true);                                        // Set email format to HTML
+            $mail->Subject = 'Password Reset Request';
+            $reset_link = "http://127.0.0.1/resetpassword.php?token=" . $reset_token;
+            $mail->Body    = "Hello,\n\nClick the link below to reset your password:\n\n" . $reset_link . "\n\nThis link will expire in 1 hour.";
+
+            $mail->send();
             echo "<p style='color: #4caf50;'>We have sent a password reset link to your email.</p>";
-        } else {
-            echo "<p style='color: #f44336;'>Failed to send email. Please try again later.</p>";
+        } catch (Exception $e) {
+            echo "<p style='color: #f44336;'>Failed to send email. Mailer Error: {$mail->ErrorInfo}</p>";
         }
     } else {
         echo "<p style='color: #f44336;'>Email address not found.</p>";
@@ -38,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
