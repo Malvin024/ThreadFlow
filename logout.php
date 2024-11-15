@@ -15,7 +15,7 @@ $redirect_delay = 3; // Redirect delay in seconds
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,9 +24,9 @@ $redirect_delay = 3; // Redirect delay in seconds
 </head>
 <body>
     <div class="logout-container">
-        <h1>Anda telah berhasil logout</h1>
-        <p>Terima kasih sudah menggunakan ThreadFlow. Anda akan diarahkan kembali ke halaman login dalam beberapa detik...</p>
-        <p>Jika tidak otomatis, klik <a href="login.php">di sini</a>.</p>
+        <h1>You have successfully logged out</h1>
+        <p>Thank you for using ThreadFlow. You will be redirected to the login page in a few seconds...</p>
+        <p>If not, click <a href="login.php">here</a>.</p>
     </div>
 
     <!-- Server-side redirect -->
