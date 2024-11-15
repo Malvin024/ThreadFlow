@@ -1,10 +1,17 @@
 <?php
 session_start();
 
+// Unset all session variables
 session_unset();
+
+// Destroy the session
 session_destroy();
 
-$redirect_delay = 3;
+// Regenerate session ID to prevent session fixation
+session_start();
+session_regenerate_id(true); // Regenerate the session ID to prevent session hijacking
+
+$redirect_delay = 3; // Redirect delay in seconds
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +20,7 @@ $redirect_delay = 3;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logout - ThreadFlow</title>
-    <link rel="stylesheet" href="/CSS/logout-styles.css"> <!-- Tambahkan link ke file CSS jika diperlukan -->
+    <link rel="stylesheet" href="/CSS/logout-styles.css"> <!-- Include your CSS -->
 </head>
 <body>
     <div class="logout-container">
@@ -22,10 +29,10 @@ $redirect_delay = 3;
         <p>Jika tidak otomatis, klik <a href="login.php">di sini</a>.</p>
     </div>
 
-    <script>
-        setTimeout(function() {
-            window.location.href = 'login.php';
-        }, <?php echo $redirect_delay * 1000; ?>);
-    </script>
+    <!-- Server-side redirect -->
+    <?php
+        // Redirect after the delay using a PHP header to prevent JavaScript manipulation
+        header("refresh: $redirect_delay; url=login.php");
+    ?>
 </body>
 </html>

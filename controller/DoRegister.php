@@ -1,54 +1,68 @@
 <?php
 session_start();
 
-// Include koneksi ke database
+// Include database connection
 require_once './connection.php';
 
+// Function to sanitize input to prevent XSS
+function sanitize_input($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Menerima data dari form
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['error'] = "Invalid CSRF token.";
+        header('Location: ../register.php');
+        exit();
+    }
+
+    // Sanitize form inputs
+    $username = sanitize_input($_POST['username']);
+    $email = sanitize_input($_POST['email']);
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm-password']);
 
-    // Validasi input
+    // Validate input
     if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
         $_SESSION['error'] = "All fields are required.";
     } elseif ($password !== $confirm_password) {
         $_SESSION['error'] = "Passwords do not match.";
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
         $_SESSION['error'] = "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = "Invalid email format.";
     } else {
-        // Cek apakah username sudah ada di database
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+        // Check if username already exists in the database
+        $stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $_SESSION['error'] = "Invalid username. This username is already taken.";
+            $_SESSION['error'] = "This username is already taken.";
         } else {
-            // Cek apakah email sudah ada di database
-            $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+            // Check if email already exists in the database
+            $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $email_result = $stmt->get_result();
 
             if ($email_result->num_rows > 0) {
-                $_SESSION['error'] = "Invalid email. This email is already registered.";
+                $_SESSION['error'] = "This email is already registered.";
             } else {
-                // Hash password untuk keamanan
+                // Hash the password using bcrypt
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-                // Siapkan query untuk insert data
+                // Prepare SQL query to insert new user data
                 $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
                 $stmt->bind_param("sss", $username, $email, $hashed_password);
 
-                // Eksekusi query
                 if ($stmt->execute()) {
-                    // Clear any previous error messages
+                    // Clear session error and redirect to login page after successful registration
                     unset($_SESSION['error']);
-                    header('Location: ../login.php'); // Redirect ke halaman login setelah berhasil register
+                    session_regenerate_id(true); // Regenerate session ID to prevent session hijacking
+                    header('Location: ../login.php');
                     exit();
                 } else {
                     $_SESSION['error'] = "There was an error registering your account.";
@@ -59,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
-    // Redirect back to register page with error
+    // Redirect back to the registration page with error message
     header('Location: ../register.php');
     exit();
 }
