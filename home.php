@@ -1,14 +1,23 @@
 <?php
+
+// Secure session settings
+ini_set('session.cookie_httponly', 1);  // Prevent JavaScript access to session cookies
+ini_set('session.use_only_cookies', 1); // Only use cookies for sessions
 session_start();
+session_regenerate_id(true);             // Regenerate session ID to prevent session fixation
+
+// Include the database connection securely
 include('controller/connection1.php');
 
 // Set the default page number and items per page for all posts
 $items_per_page = 10;
-$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$page = isset($_GET['page']) ? filter_var($_GET['page'], FILTER_VALIDATE_INT) : 1;
+$page = $page ? $page : 1; // Default to page 1 if validation fails
 $offset = ($page - 1) * $items_per_page;
 
-// Capture the search query if provided
+// Capture and sanitize the search query if provided
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$search_query = htmlspecialchars($search_query, ENT_QUOTES, 'UTF-8'); // Prevent XSS
 
 // Get the sort option (default to latest)
 $sort_option = isset($_GET['order']) ? $_GET['order'] : 'latest';
@@ -28,9 +37,9 @@ switch ($sort_option) {
 }
 
 // Modify the query to filter based on search query if provided
-$search_condition = $search_query ? "WHERE posts.title LIKE '%$search_query%' OR posts.content LIKE '%$search_query%'" : '';
+$search_condition = $search_query ? "WHERE posts.title LIKE ? OR posts.content LIKE ?" : '';
 
-// Query to get the latest posts (3 posts for the "Latest Posts" section)
+// Prepare the query for fetching the latest posts (3 posts for the "Latest Posts" section)
 $latest_result = null; // Initialize as null to avoid undefined variable errors
 if (!$search_query) {  // Only query the latest posts if no search is active
     $sql_latest = "
@@ -52,7 +61,14 @@ if (!$search_query) {  // Only query the latest posts if no search is active
         $order_by
         LIMIT 3
     ";
-    $latest_result = $conn->query($sql_latest);
+
+    $stmt = $conn->prepare($sql_latest);
+    if ($search_query) {
+        $search_like = "%$search_query%";
+        $stmt->bind_param('ss', $search_like, $search_like); // Bind search parameters
+    }
+    $stmt->execute();
+    $latest_result = $stmt->get_result();
 }
 
 // Query to get all posts from all users, sorted by creation date, with pagination
@@ -73,14 +89,29 @@ $sql_all_posts = "
         users ON posts.user_id = users.user_id
     $search_condition
     $order_by
-    LIMIT $items_per_page OFFSET $offset
+    LIMIT ? OFFSET ?
 ";
 
-$result_all_posts = $conn->query($sql_all_posts);
+$stmt_all_posts = $conn->prepare($sql_all_posts);
+if ($search_query) {
+    $search_like = "%$search_query%";
+    // Correct parameter binding for search query (both title and content fields)
+    $stmt_all_posts->bind_param('ssii', $search_like, $search_like, $items_per_page, $offset);
+} else {
+    // If there's no search query, bind only the pagination parameters
+    $stmt_all_posts->bind_param('ii', $items_per_page, $offset);
+}
+$stmt_all_posts->execute();
+$result_all_posts = $stmt_all_posts->get_result();
 
 // Get total number of posts to calculate pagination for the all posts section
 $sql_count = "SELECT COUNT(*) AS total_posts FROM posts $search_condition";
-$total_result = $conn->query($sql_count);
+$stmt_count = $conn->prepare($sql_count);
+if ($search_query) {
+    $stmt_count->bind_param('ss', $search_like, $search_like); // Bind search parameters for count query
+}
+$stmt_count->execute();
+$total_result = $stmt_count->get_result();
 $total_row = $total_result->fetch_assoc();
 $total_posts = $total_row['total_posts'];
 $total_pages = ceil($total_posts / $items_per_page);
