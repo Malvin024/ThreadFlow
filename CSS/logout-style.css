@@ -10,19 +10,19 @@ session_destroy();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logout - ThreadFlow</title>
-    <link rel="stylesheet" href="/CSS/logout-styles.css"> <!-- Pastikan CSS yang benar di-link -->
+    <link rel="stylesheet" href="/CSS/logout-styles.css"> <!-- Pastikan link ke CSS logout-styles.css -->
 </head>
 <body>
-
     <div class="container">
-        <h2>Anda telah berhasil logout</h2>
-        <p>Terima kasih telah mengunjungi ThreadFlow. Kami berharap dapat bertemu lagi!</p>
-        <a href="login.php" class="logout-btn">Login Kembali</a>
+        <div class="message-box">
+            <h2>Anda telah berhasil logout</h2>
+            <p>Terima kasih telah mengunjungi ThreadFlow. Kami berharap dapat bertemu lagi!</p>
+            <a href="login.php" class="logout-btn">Login Kembali</a>
+        </div>
     </div>
 
     <footer>
         <p>&copy; 2024 ThreadFlow - All rights reserved</p>
     </footer>
-
 </body>
 </html>
