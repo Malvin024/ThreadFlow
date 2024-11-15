@@ -8,13 +8,13 @@ if (!isset($_SESSION['user_id'])) {
     exit(); // Redirect to login page if the user is not logged in
 }
 
-// Inisialisasi variabel untuk error handling
+// Initialize variables for error handling
 $title = '';
 $content = '';
 $category_id = '';
 $error = '';
 
-// Ambil daftar kategori untuk dropdown
+// Fetch categories for the dropdown
 $query = "SELECT category_id, category_name FROM categories";
 $result = $conn->query($query);
 
@@ -29,32 +29,36 @@ if ($result && $result->num_rows > 0) {
     exit(); // Redirect if categories can't be fetched
 }
 
-// Simpan kategori ke session untuk digunakan di halaman create.php
+// Save categories in session for use in the form
 $_SESSION['categories'] = $categories;
 
-// Proses saat form disubmit
+// CSRF Token Validation
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("CSRF token validation failed.");
+    }
+
     // Trim and sanitize user inputs
     $title = htmlspecialchars(trim($_POST['title']));
     $content = htmlspecialchars(trim($_POST['content']));
     $category_id = $_POST['category'];
 
-    // Validasi input
+    // Validate inputs
     if (empty($title) || empty($content)) {
         $_SESSION['error'] = "Title and Content are required."; // Error message
     } elseif (!ctype_digit($category_id)) {
         $_SESSION['error'] = "Invalid category selected."; // Invalid category ID
     } else {
-        // Siapkan statement untuk menambahkan post
+        // Prepare the statement to insert the post
         $stmt = $conn->prepare("INSERT INTO posts (user_id, category_id, title, content) VALUES (?, ?, ?, ?)");
         if ($stmt) {
             $stmt->bind_param("iiss", $_SESSION['user_id'], $category_id, $title, $content);
 
-            // Eksekusi statement
+            // Execute the statement
             if ($stmt->execute()) {
-                // Clear previous session data
+                // Clear session data after successful post
                 unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id'], $_SESSION['categories']);
-                header('Location: ../home.php'); // Redirect to homepage after successful post
+                header('Location: ../index.php'); // Redirect to homepage after successful post
                 exit();
             } else {
                 $_SESSION['error'] = "Failed to submit your post. Please try again.";
@@ -65,12 +69,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Simpan input form sebelumnya ke session untuk repopulasi jika terjadi error
+    // Save form input for repopulation if there's an error
     $_SESSION['title'] = $title;
     $_SESSION['content'] = $content;
     $_SESSION['category_id'] = $category_id;
 
-    // Redirect kembali ke form jika ada error
+    // Redirect back to form if there's an error
     header('Location: ../createpost.php');
     exit();
 }

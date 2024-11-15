@@ -1,18 +1,14 @@
 <?php
+
+// Secure session handling
+ini_set('session.cookie_httponly', 1);  // Prevent JavaScript from accessing session cookies
+ini_set('session.use_only_cookies', 1);  // Only allow session cookies, not URL parameters
 session_start();
+session_regenerate_id(true);  // Regenerate session ID to prevent session fixation
 
-// Database connection (replace with your actual database credentials)
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "threadflow";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Include database connection
+require_once 'controller/connection1.php'; // Include the database configuration file
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -44,8 +40,18 @@ if ($result && $result->num_rows > 0) {
 // Simpan kategori ke session untuk digunakan di halaman create.php
 $_SESSION['categories'] = $categories;
 
+// CSRF Token Generation and Validation
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a new token if not already set
+}
+
 // Proses saat form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("CSRF token validation failed.");
+    }
+
     // Trim and sanitize user inputs
     $title = htmlspecialchars(trim($_POST['title']));
     $content = htmlspecialchars(trim($_POST['content']));
@@ -66,6 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 // Clear previous session data
                 unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id'], $_SESSION['categories']);
+                // Regenerate session ID to prevent session fixation attacks
+                session_regenerate_id(true);
                 header('Location: ../home.php'); // Redirect to homepage after successful post
                 exit();
             } else {
@@ -137,6 +145,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label for="content">Content:</label>
         <textarea name="content" id="content" rows="8" required><?php echo isset($_SESSION['content']) ? htmlspecialchars($_SESSION['content']) : ''; ?></textarea>
+
+        <!-- CSRF Token -->
+        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
         <button type="submit">Submit Post</button>
     </form>
