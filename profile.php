@@ -59,7 +59,8 @@ $profilePicture = $user['profile_picture'] && file_exists('uploads/' . $user['pr
     <main>
         <h2>Your Profile</h2>
         <div class="profile-section">
-            <img src="uploads/<?php echo htmlspecialchars($profilePicture); ?>" alt="Profile Picture" class="profile-pic">
+            <!-- Menampilkan gambar profil yang diperbarui -->
+            <img src="uploads/<?php echo htmlspecialchars($profilePicture); ?>?<?php echo time(); ?>" alt="Profile Picture" class="profile-pic">
             <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
             <p><strong>Joined:</strong> <?php echo date('Y-m-d', strtotime($user['created_at'])); ?></p>
