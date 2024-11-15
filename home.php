@@ -10,7 +10,8 @@ $sql = "
         posts.content, 
         posts.created_at AS post_created_at,
         categories.category_name, 
-        users.username AS author_name
+        users.username AS author_name,
+        users.profile_picture
     FROM 
         posts
     JOIN 
@@ -24,7 +25,7 @@ $sql = "
 $result = $conn->query($sql);
 
 // Check if user is logged in
-$is_logged_in = isset($_SESSION['user_id']);
+$is_logged_in = isset($_SESSION['username']);
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +47,12 @@ $is_logged_in = isset($_SESSION['user_id']);
             <input type="text" class="search-box" placeholder="Cari di ThreadFlow...">
             <nav>
                 <?php if ($is_logged_in): ?>
-                    <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?> | <a href="/logout.php">Logout</a></p>
+                    <div class="user-info">
+                        <a href="profile.php">
+                            <img src="uploads/<?php echo htmlspecialchars($_SESSION['profile_picture'] ?? 'default-picture.jfif'); ?>" alt="Profile Picture" class="profile-picture">
+                        </a>
+                        <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?> | <a href="/logout.php">Logout</a></p>
+                    </div>
                 <?php else: ?>
                     <a href="/login.php">Login</a> | <a href="/register.php">Register</a>
                 <?php endif; ?>
@@ -168,51 +174,16 @@ $is_logged_in = isset($_SESSION['user_id']);
     <div id="loginModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <p>You need to login first!</p>
+            <p>You need to login to create a post.</p>
+            <a href="login.php" class="login-btn">Login</a>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <h3>About Us</h3>
-            <p>
-                ThreadFlow is a modern discussion forum platform designed to connect people through meaningful conversations. 
-                We provide a space for users to share ideas, news, and experiences across various fields such as technology, local events, and general discussions.
-            </p>
-            <h4>Contact Us</h4>
-            <p>
-                If you have any questions or need assistance, feel free to contact us:
-            </p>
-            <p>
-                <strong>Email:</strong> support@threadflow.com <br>
-                <strong>Phone:</strong> +123-456-7890
-            </p>
-            <p>&copy; 2024 ThreadFlow - Copyright</p>
-        </div>
+        <p>&copy; 2024 ThreadFlow</p>
     </footer>
 
-    <script>
-        function refreshPage() {
-            location.reload();
-        }
-
-        function showModal(event) {
-            event.preventDefault(); // Prevent the form from submitting and refreshing the page
-            document.getElementById('loginModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-        function createPost() {
-            window.location.href = 'createpost.php';
-        }
-    </script>
-
+    <script src="JS/script.js"></script>
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
