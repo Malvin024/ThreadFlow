@@ -12,7 +12,15 @@
     <header>
         <h1>ThreadFlow</h1>
         <div class="header-right">
-            <span class="user-name">Welcome, User123</span>
+            <?php
+            session_start(); // Memulai sesi
+            if (isset($_SESSION['username'])) {
+                $loggedInUser = htmlspecialchars($_SESSION['username']);
+                echo "<span class='user-name'>Welcome, $loggedInUser</span>";
+            } else {
+                echo "<span class='user-name'><a href='login.php'>Login</a> / <a href='register.php'>Register</a></span>";
+            }
+            ?>
         </div>
     </header>
 
