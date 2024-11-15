@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +20,9 @@
         <p class="subtitle">Join ThreadFlow today!</p>
 
         <!-- Menampilkan error jika ada -->
-        <?php if (isset($error)): ?>
-            <p style="color: red;"><?php echo $error; ?></p>
+        <?php if (isset($_SESSION['error'])): ?>
+            <p style="color: red;"><?php echo $_SESSION['error']; ?></p>
+            <?php unset($_SESSION['error']); // Clear error after displaying ?>
         <?php endif; ?>
 
         <div class="login-box">
