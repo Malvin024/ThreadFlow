@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 unset($_SESSION['error']);
 
                 // Redirect ke halaman utama atau dashboard
-                header('Location: ../index.php'); // Ganti dengan halaman yang sesuai
+                header('Location: ../home.php'); // Ganti dengan halaman yang sesuai
                 exit();
             } else {
                 $_SESSION['error'] = "Invalid username or password.";
