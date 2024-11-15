@@ -170,3 +170,19 @@ footer a {
 .close:hover {
     color: black;
 }
+
+/* Edit Profile Button */
+button {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #003366; /* Dark blue color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #002a4d; /* Darker shade of blue on hover */
+}
