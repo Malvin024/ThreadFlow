@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head>  
+    <link rel="shortcut icon" href="Images/panda.ico" /> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Post - ThreadFlow</title>
@@ -9,6 +10,7 @@
 <body>
 
 <header>
+    
     <h1>ThreadFlow</h1>
     <div class="header-right">
         <input type="text" class="search-box" placeholder="Cari di ThreadFlow...">
