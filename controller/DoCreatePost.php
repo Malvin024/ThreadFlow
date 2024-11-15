@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once './connection.php'; // Asumsi ada koneksi database di file ini
+require_once 'connection.php'; // Assume this connects to the database
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -13,6 +13,20 @@ $title = '';
 $content = '';
 $category_id = '';
 $error = '';
+
+// Get the list of categories for the dropdown
+$query = "SELECT * FROM categories";
+$result = $conn->query($query);
+
+$categories = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $categories[] = $row;
+    }
+}
+
+// Store categories in session for use in create.php
+$_SESSION['categories'] = $categories;
 
 // Proses saat form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -33,8 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Eksekusi statement
         if ($stmt->execute()) {
             // Clear any previous error messages
-            unset($_SESSION['error']);
-            header('Location: index.php'); // Redirect ke halaman utama setelah post berhasil
+            unset($_SESSION['error'], $_SESSION['title'], $_SESSION['content'], $_SESSION['category_id']);
+            header('Location: ../index.php'); // Redirect ke halaman utama setelah post berhasil
             exit();
         } else {
             $_SESSION['error'] = "There was an error submitting your post.";
@@ -48,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['category_id'] = $category_id;
 
     // Redirect back to the form if there's an error
-    header("Location: ../createpost.php");
+    header('Location: ../create.php');
     exit();
 }
 ?>
