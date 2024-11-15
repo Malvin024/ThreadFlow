@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Include koneksi ke database
 require_once './connection.php';
 
@@ -11,11 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validasi input
     if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
-        $error = "All fields are required.";
+        $_SESSION['error'] = "All fields are required.";
     } elseif ($password !== $confirm_password) {
-        $error = "Passwords do not match.";
+        $_SESSION['error'] = "Passwords do not match.";
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
-        $error = "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.";
+        $_SESSION['error'] = "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.";
     } else {
         // Cek apakah username sudah ada di database
         $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
@@ -24,8 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Username sudah terdaftar
-            $error = "Invalid username. This username is already taken.";
+            $_SESSION['error'] = "Invalid username. This username is already taken.";
         } else {
             // Cek apakah email sudah ada di database
             $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -34,8 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email_result = $stmt->get_result();
 
             if ($email_result->num_rows > 0) {
-                // Email sudah terdaftar
-                $error = "Invalid email. This email is already registered.";
+                $_SESSION['error'] = "Invalid email. This email is already registered.";
             } else {
                 // Hash password untuk keamanan
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
@@ -46,16 +46,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Eksekusi query
                 if ($stmt->execute()) {
+                    // Clear any previous error messages
+                    unset($_SESSION['error']);
                     header('Location: ../login.php'); // Redirect ke halaman login setelah berhasil register
                     exit();
                 } else {
-                    $error = "There was an error registering your account.";
+                    $_SESSION['error'] = "There was an error registering your account.";
                 }
             }
         }
 
         $stmt->close();
     }
+
+    // Redirect back to register page with error
+    header('Location: ../register.php');
+    exit();
 }
 
 $conn->close();
