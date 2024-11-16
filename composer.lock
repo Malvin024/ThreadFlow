@@ -6,6 +6,10 @@
         "vlucas/phpdotenv": "^6.9",
         "phpmailer/phpmailer": "^6.9"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "mockery/mockery": "^1.5"
+    },
     "autoload": {
         "psr-4": {
             "ThreadFlow\\": "src/"
@@ -54,6 +58,42 @@
             "type": "library",
             "install_path": "vendor/phpmailer/phpmailer",
             "dev": false
+        },
+        {
+            "name": "phpunit/phpunit",
+            "version": "9.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "abcdef1234567890abcdef1234567890abcdef12"
+            },
+            "dist": {
+                "type": "tar",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/tarball/abcdef1234567890abcdef1234567890abcdef12",
+                "reference": "abcdef1234567890abcdef1234567890abcdef12",
+                "shasum": ""
+            },
+            "type": "library",
+            "install_path": "vendor/phpunit/phpunit",
+            "dev": true
+        },
+        {
+            "name": "mockery/mockery",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mockery/mockery.git",
+                "reference": "abcdef1234567890abcdef1234567890abcdef12"
+            },
+            "dist": {
+                "type": "tar",
+                "url": "https://api.github.com/repos/mockery/mockery/tarball/abcdef1234567890abcdef1234567890abcdef12",
+                "reference": "abcdef1234567890abcdef1234567890abcdef12",
+                "shasum": ""
+            },
+            "type": "library",
+            "install_path": "vendor/mockery/mockery",
+            "dev": true
         }
     ]
 }
