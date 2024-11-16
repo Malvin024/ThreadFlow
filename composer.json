@@ -2,4 +2,19 @@
     "require": {
         "phpmailer/phpmailer": "^6.9"
     }
+
+    "name": "ThreadFlow",
+    "description": "ThreadFlow is a modern forum platform that connects users through dynamic and collaborative discussions. With unique features such as topic collaboration, gamification, and local communities, ThreadFlow creates a space for users to share ideas and engage in interactive discussions. This platform is designed to build active and informative digital communities.",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "license": "MIT"
+
 }
