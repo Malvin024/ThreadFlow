@@ -1,6 +1,6 @@
 {
 
-    "name": "threadflow",
+    "name": "threadflow/forum-platform",
     "description": "ThreadFlow is a modern forum platform for dynamic and collaborative discussions.",
     "type": "project",
     "require": {
@@ -11,7 +11,6 @@
             "": "src/"
         }
     },
-    
     "minimum-stability": "stable",
     "license": "MIT",
     
