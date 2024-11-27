@@ -1,5 +1,17 @@
 {
+
+    "name": "threadflow/forum-platform",
+    "description": "ThreadFlow is a modern forum platform for dynamic and collaborative discussions.",
+    "type": "project",
     "require": {
+        "vlucas/phpdotenv": "^6.9",
         "phpmailer/phpmailer": "^6.9"
-    }
+    },
+    "autoload": {
+        "psr-4": {
+            "ThreadFlow\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "license": "MIT"
 }
