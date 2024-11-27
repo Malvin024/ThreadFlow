@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Generate CSRF token if not already set
+
 if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a CSRF token
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); 
 }
 ?>
 
@@ -25,15 +25,15 @@ if (!isset($_SESSION['csrf_token'])) {
         <h1>Create Account</h1>
         <p class="subtitle">Join ThreadFlow today!</p>
 
-        <!-- Display error if available -->
+       
         <?php if (isset($_SESSION['error'])): ?>
             <p style="color: red;"><?php echo htmlspecialchars($_SESSION['error'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <?php unset($_SESSION['error']); // Clear error after displaying ?>
+            <?php unset($_SESSION['error']);  ?>
         <?php endif; ?>
 
         <div class="login-box">
             <form action="/controller/DoRegister.php" method="POST">
-                <!-- CSRF Token -->
+                
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
 
                 <input type="text" name="username" placeholder="Username" required>
@@ -41,7 +41,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="password" name="confirm-password" placeholder="Confirm Password" required>
                 
-                <!-- Password Requirements Message -->
+               
                 <p class="password-requirements">
                     Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.
                 </p>

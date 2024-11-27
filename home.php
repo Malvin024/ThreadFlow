@@ -1,47 +1,47 @@
 <?php
 
-// Secure session settings
-ini_set('session.cookie_httponly', 1);  // Prevent JavaScript access to session cookies
-ini_set('session.use_only_cookies', 1); // Only use cookies for sessions
-session_start();
-session_regenerate_id(true);             // Regenerate session ID to prevent session fixation
 
-// Include the database connection securely
+ini_set('session.cookie_httponly', 1);  
+ini_set('session.use_only_cookies', 1); 
+session_start();
+session_regenerate_id(true);            
+
+
 include('controller/connection1.php');
 
-// Set the default page number and items per page for all posts
+
 $items_per_page = 10;
 $page = isset($_GET['page']) ? filter_var($_GET['page'], FILTER_VALIDATE_INT) : 1;
-$page = $page ? $page : 1; // Default to page 1 if validation fails
+$page = $page ? $page : 1; 
 $offset = ($page - 1) * $items_per_page;
 
-// Capture and sanitize the search query if provided
-$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
-$search_query = htmlspecialchars($search_query, ENT_QUOTES, 'UTF-8'); // Prevent XSS
 
-// Get the sort option (default to latest)
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$search_query = htmlspecialchars($search_query, ENT_QUOTES, 'UTF-8'); 
+
+
 $sort_option = isset($_GET['order']) ? $_GET['order'] : 'latest';
 
-// Determine the SQL ORDER BY clause based on the sort option
+
 switch ($sort_option) {
     case 'popular':
-        $order_by = 'ORDER BY posts.views DESC'; // Sort by most views (popularity)
+        $order_by = 'ORDER BY posts.views DESC'; 
         break;
     case 'trending':
-        $order_by = 'ORDER BY posts.replies DESC'; // Sort by most replies (trending)
+        $order_by = 'ORDER BY posts.replies DESC'; 
         break;
     case 'latest':
     default:
-        $order_by = 'ORDER BY posts.created_at DESC'; // Sort by latest posts
+        $order_by = 'ORDER BY posts.created_at DESC'; 
         break;
 }
 
-// Modify the query to filter based on search query if provided
+
 $search_condition = $search_query ? "WHERE posts.title LIKE ? OR posts.content LIKE ?" : '';
 
-// Prepare the query for fetching the latest posts (3 posts for the "Latest Posts" section)
-$latest_result = null; // Initialize as null to avoid undefined variable errors
-if (!$search_query) {  // Only query the latest posts if no search is active
+
+$latest_result = null; 
+if (!$search_query) {  
     $sql_latest = "
         SELECT 
             posts.post_id, 
@@ -65,13 +65,13 @@ if (!$search_query) {  // Only query the latest posts if no search is active
     $stmt = $conn->prepare($sql_latest);
     if ($search_query) {
         $search_like = "%$search_query%";
-        $stmt->bind_param('ss', $search_like, $search_like); // Bind search parameters
+        $stmt->bind_param('ss', $search_like, $search_like); 
     }
     $stmt->execute();
     $latest_result = $stmt->get_result();
 }
 
-// Query to get all posts from all users, sorted by creation date, with pagination
+
 $sql_all_posts = "
     SELECT 
         posts.post_id, 
@@ -95,20 +95,20 @@ $sql_all_posts = "
 $stmt_all_posts = $conn->prepare($sql_all_posts);
 if ($search_query) {
     $search_like = "%$search_query%";
-    // Correct parameter binding for search query (both title and content fields)
+    
     $stmt_all_posts->bind_param('ssii', $search_like, $search_like, $items_per_page, $offset);
 } else {
-    // If there's no search query, bind only the pagination parameters
+    
     $stmt_all_posts->bind_param('ii', $items_per_page, $offset);
 }
 $stmt_all_posts->execute();
 $result_all_posts = $stmt_all_posts->get_result();
 
-// Get total number of posts to calculate pagination for the all posts section
+
 $sql_count = "SELECT COUNT(*) AS total_posts FROM posts $search_condition";
 $stmt_count = $conn->prepare($sql_count);
 if ($search_query) {
-    $stmt_count->bind_param('ss', $search_like, $search_like); // Bind search parameters for count query
+    $stmt_count->bind_param('ss', $search_like, $search_like); 
 }
 $stmt_count->execute();
 $total_result = $stmt_count->get_result();
@@ -116,11 +116,11 @@ $total_row = $total_result->fetch_assoc();
 $total_posts = $total_row['total_posts'];
 $total_pages = ceil($total_posts / $items_per_page);
 
-// Get all categories from the database for filtering
+
 $category_sql = "SELECT category_id, category_name FROM categories ORDER BY category_name";
 $category_result = $conn->query($category_sql);
 
-// Check if user is logged in
+
 $is_logged_in = isset($_SESSION['username']);
 ?>
 
@@ -132,11 +132,11 @@ $is_logged_in = isset($_SESSION['username']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadFlow - Forum Diskusi Modern</title>
     <link rel="stylesheet" href="/CSS/index-styles.css">
-    <link rel="stylesheet" href="/CSS/modal-styles.css"> <!-- Link to the new CSS file -->
+    <link rel="stylesheet" href="/CSS/modal-styles.css"> 
 </head>
 <body>
 
-    <!-- Header -->
+    
     <header>
         <a href="home.php">
             <h1>ThreadFlow</h1>
@@ -161,7 +161,7 @@ $is_logged_in = isset($_SESSION['username']);
         </div>
     </header>
 
-    <!-- Subheader -->
+    
     <div class="subheader">
         <button onclick="window.location.href='createpost.php'">Create Post</button>
         <button onclick="refreshPage()">Refresh</button>
@@ -180,9 +180,9 @@ $is_logged_in = isset($_SESSION['username']);
         </select>
     </div>
 
-    <!-- Main Content Section -->
+   
     <main>
-        <!-- Remove Latest Posts section when search is active -->
+        
         <?php if ($page == 1 && !$search_query): ?>  
         <div class="section" id="latest-posts">
             <h2>Latest Posts</h2>
@@ -197,7 +197,7 @@ $is_logged_in = isset($_SESSION['username']);
                     </thead>
                     <tbody>
                         <?php
-                        // Display the latest 3 posts
+                        
                         if ($latest_result && $latest_result->num_rows > 0) {
                             while ($post = $latest_result->fetch_assoc()) {
                                 echo "<tr>";
@@ -216,7 +216,7 @@ $is_logged_in = isset($_SESSION['username']);
         </div>
         <?php endif; ?>
 
-        <!-- All Posts Section with Pagination -->
+       
         <div class="section" id="all-posts">
             <h2>All Posts</h2>
             <div class="section-content">
@@ -231,7 +231,7 @@ $is_logged_in = isset($_SESSION['username']);
                     </thead>
                     <tbody>
                         <?php
-                        // Display all posts with pagination
+                       
                         if ($result_all_posts->num_rows > 0) {
                             while ($post = $result_all_posts->fetch_assoc()) {
                                 echo "<tr>";
@@ -250,7 +250,7 @@ $is_logged_in = isset($_SESSION['username']);
             </div>
         </div>
 
-        <!-- Pagination -->
+        
         <div class="pagination">
             <?php if ($page > 1): ?>
                 <a href="home.php?page=<?php echo $page - 1; ?>&order=<?php echo $sort_option; ?>">Previous</a>
@@ -266,7 +266,7 @@ $is_logged_in = isset($_SESSION['username']);
         </div>
     </main>
 
-    <!-- Footer -->
+    
     <footer>
         <p>&copy; 2024 ThreadFlow. All rights reserved.</p>
     </footer>
@@ -276,6 +276,6 @@ $is_logged_in = isset($_SESSION['username']);
 </html>
 
 <?php
-// Close the database connection
+
 $conn->close();
 ?>

@@ -1,28 +1,27 @@
 <?php
 
 
-// Secure session settings
-ini_set('session.cookie_httponly', 1);  // Prevent JavaScript access to session cookies
-ini_set('session.use_only_cookies', 1); // Only use cookies for sessions
-session_start();
-session_regenerate_id(true);             // Regenerate session ID to prevent session fixation
 
-// Include the database connection securely
+ini_set('session.cookie_httponly', 1);  
+ini_set('session.use_only_cookies', 1); 
+session_start();
+session_regenerate_id(true);             
+
+
 include('controller/connection1.php');
 
-// Check if user is logged in
+
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
 }
 
-// Get logged-in user's username
 $loggedInUser = $_SESSION['username'];
 
-// Fetch user data from the database using a prepared statement
+
 $query = "SELECT * FROM users WHERE username = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param('s', $loggedInUser); // 's' means the parameter is a string
+$stmt->bind_param('s', $loggedInUser); 
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -33,7 +32,7 @@ if (!$user) {
     exit();
 }
 
-// Set default profile picture if not set or if file does not exist
+
 $profilePicture = $user['profile_picture'] && file_exists('uploads/' . $user['profile_picture']) ? $user['profile_picture'] : 'default-picture.jfif';
 ?>
 
@@ -46,12 +45,12 @@ $profilePicture = $user['profile_picture'] && file_exists('uploads/' . $user['pr
     <link rel="stylesheet" href="/CSS/index-styles.css">
     <style>
         .profile-pic {
-            width: 100px; /* Lebih kecil */
-            height: 100px; /* Sesuaikan dengan width */
-            border-radius: 50%; /* Membuatnya bulat */
-            object-fit: cover; /* Menjaga proporsi gambar */
-            border: 2px solid #fff; /* Opsional: Border putih */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Opsional: bayangan */
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 2px solid #fff; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
         }
     </style>
 </head>
@@ -67,7 +66,7 @@ $profilePicture = $user['profile_picture'] && file_exists('uploads/' . $user['pr
     <main>
         <h2>Your Profile</h2>
         <div class="profile-section">
-            <!-- Menampilkan gambar profil yang diperbarui -->
+           
             <img src="uploads/<?php echo htmlspecialchars($profilePicture); ?>?<?php echo time(); ?>" alt="Profile Picture" class="profile-pic">
             <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
@@ -92,7 +91,7 @@ $profilePicture = $user['profile_picture'] && file_exists('uploads/' . $user['pr
 </html>
 
 <?php
-// Close the database connection
+
 $stmt->close();
 $conn->close();
 ?>
